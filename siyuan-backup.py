@@ -1,3 +1,5 @@
+#!/bin/python3
+
 import requests
 import logging
 import os
@@ -59,10 +61,6 @@ def send_dir():
         try:
             # Move the backup folder to the backup directory
             subprocess.run(["mv", f"siyuan-backup_{now}", backup_dir])  
-
-            # Write to the log file
-            with open("backup_log.txt", "a") as log_file:
-                log_file.write(f"{path} backed up on {now}\n")  
             print("Backups have been successfully moved to the backup directory")            
         except subprocess.CalledProcessError:
             print("Error: while moving files to backup directory")
@@ -70,9 +68,12 @@ def send_dir():
 
 # List of URLS of the zip files you want to download
 urls = [
-    "http://127.0.0.1:42989/export/English.zip",    
+    "http://127.0.0.1:42989/export/English.zip",
+    "http://127.0.0.1:42989/export/Lesson%20Notes.zip",
     "http://127.0.0.1:42989/export/Notes.zip",    
-    
+    "http://127.0.0.1:42989/export/Lesson%20Notes.sy.zip",
+    "http://127.0.0.1:42989/export/English.sy.zip",
+    "http://127.0.0.1:42989/export/Notes.sy.zip",
 ]
 
 def main():
@@ -81,4 +82,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
