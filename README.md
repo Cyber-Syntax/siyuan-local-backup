@@ -2,4 +2,4 @@
 Script written for local backup in Siyuan-note.
 
 # Usage
-- You need to change urls for your notebooks.
+- You should replace URLs with your own notebook names.
