@@ -46,28 +46,28 @@ def backup(urls):
         download_file(url, folder_name)
 
 def send_dir():
-    
+
     # Get current time and use it as part of the backup folder name
     now = time.strftime("%d-%m-%Y")
     path = f"siyuan-backup_{now}"
-    
-    # Define the backup directory    
+
+    # Define the backup directory
     full_path = os.path.join(backup_dir, path)
-    
+
     # Check if a backup with the same name already exists
     if os.path.exists(full_path):
         print(f"There is already one backup for this {path}")
     else:
         try:
             # Move the backup folder to the backup directory
-            subprocess.run(["mv", f"siyuan-backup_{now}", backup_dir])  
-            print("Backups have been successfully moved to the backup directory")            
+            subprocess.run(["mv", f"siyuan-backup_{now}", backup_dir])
+            print("Backups have been successfully moved to the backup directory")
         except subprocess.CalledProcessError:
             print("Error: while moving files to backup directory")
             return
 
 def delete_oldest(file_prefix, date_format, days_old):
-    
+
     """
     This function deletes the oldest backup directory based on the number of days old.
 
@@ -98,8 +98,8 @@ def delete_oldest(file_prefix, date_format, days_old):
                         subprocess.run(["rm", "-r", path])
                         # Print a message indicating the oldest backup has been deleted
                         print(f"Deleted the oldest backup: {f}")
-# Define backups directory                    
-backup_dir = os.path.expanduser("~") + "/Documents/backup_Documents/siyuan_Backups/"
+# Define backups directory
+backup_dir = os.path.expanduser("~") + "/Documents/app_backups/siyuan_Backups/"
 
 
 
@@ -107,7 +107,7 @@ backup_dir = os.path.expanduser("~") + "/Documents/backup_Documents/siyuan_Backu
 
 # List of URLS of the zip files you want to download
 urls = [   
-    "http://127.0.0.1:42989/export/Notes.zip",    
+    "http://127.0.0.1:6806/export/Notes.zip",    
 ]
 
 def main():
