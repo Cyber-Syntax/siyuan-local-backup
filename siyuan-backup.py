@@ -10,40 +10,61 @@ import datetime
 def log_error(message):
     logging.error(f"{message}")
 
-def download_file(url, folder_name):
+EXPORT_MD_ENDPOINT = "127.0.0.1:6806/api/export/exportMdContent"
+EXPORT_RESOURCES_ENDPOINT = "127.0.0.1:6806/api/export/exportResources"
 
-    # Send a request to the URL to get the file
-    response = requests.get(url)
+# Replace 'YOUR_API_KEY' with the actual API key if required for authorization.
+#! DELETE BEFORE COMMITTING
+headers = {
+    "Authorization": "YOUR_API_KEY"
+}
 
-     # Check if the request was successful
+# Set the ID of the doc block to export.
+doc_block_id = "20230207170649-mlrulge"
+
+# Set the list of file or folder paths to export.
+file_paths = [
+    "/conf/appearance/boot",
+    "/conf/appearance/langs",
+    "/conf/appearance/emojis/conf.json",
+    "/conf/appearance/icons/index.html",
+]
+
+# Set the name of the zip file to be created (optional).
+zip_file_name = "exported-files.zip"
+
+def export_markdown():
+    params = {
+        "id": doc_block_id
+    }
+
+    response = requests.post(EXPORT_MD_ENDPOINT, json=params, headers=headers)
     if response.status_code == 200:
-        # Get the filename from the URL
-        filename = url.split("/")[-1]
-        file_path = f"{folder_name}/{filename}"
-
-        # Check if the file already exists in the folder
-        if os.path.exists(file_path):
-            logging.info(f"{filename} already exists in {folder_name}. Skipping download.")
-        else:
-            # Open a file to save the zip file
-            with open(file_path, "wb") as file:
-                # Write the content of the response to the file
-                file.write(response.content)
+        data = response.json()["data"]
+        h_path = data["hPath"]
+        content = data["content"]
+        # You can do whatever you want with the exported content here.
+        print(f"Exported Markdown Path: {h_path}")
+        print(f"Markdown Content: {content}")
     else:
-        log_error(f"Failed to download {url} or siyuan-note not opened.")
+        print(f"Failed to export Markdown. Error: {response.json()['msg']}")
 
-def backup(urls):
-    # Configure logging
-    logging.basicConfig(filename="error.log", level=logging.ERROR, format="%(asctime)s: %(message)s")
 
-    # Create a folder with the current time as its name
-    now = datetime.datetime.now().strftime("%d-%m-%Y")
-    folder_name = f"siyuan-backup_{now}"
-    os.makedirs(folder_name, exist_ok=True)
+def export_files_and_folders():
+    params = {
+        "paths": file_paths,
+        "name": zip_file_name
+    }
 
-    # Loop through each URL and download the file
-    for url in urls:
-        download_file(url, folder_name)
+    response = requests.post(EXPORT_RESOURCES_ENDPOINT, json=params, headers=headers)
+    if response.status_code == 200:
+        data = response.json()["data"]
+        zip_file_path = data["path"]
+        # You can do whatever you want with the zip file path here.
+        print(f"Exported Zip File Path: {zip_file_path}")
+    else:
+        print(f"Failed to export files and folders. Error: {response.json()['msg']}")
+
 
 def send_dir():
     
@@ -99,7 +120,7 @@ def delete_oldest(file_prefix, date_format, days_old):
                         # Print a message indicating the oldest backup has been deleted
                         print(f"Deleted the oldest backup: {f}")
 # Define backups directory                    
-backup_dir = os.path.expanduser("~") + "/Documents/backup_Documents/siyuan_Backups/"
+backup_dir = os.path.expanduser("~") + "/Documents/app_backups/siyuan_Backups/"
 
 
 
@@ -110,14 +131,17 @@ urls = [
     "http://127.0.0.1:42989/export/Notes.zip",    
 ]
 
-def main():
-    # Call the function to backup files.
-    backup(urls)
-    # Call the function to move backups to backups directory
-    send_dir()
+# def main():
+#     # Call the function to backup files.
+#     backup(urls)
+#     # Call the function to move backups to backups directory
+#     send_dir()
     
-    # Call the function to delete the oldest backup that is more than 90 days old
-    delete_oldest("siyuan-backup_", "%d-%m-%Y", 90)
+#     # Call the function to delete the oldest backup that is more than 90 days old
+#     delete_oldest("siyuan-backup_", "%d-%m-%Y", 90)
+
 if __name__ == "__main__":
-    main()
+    export_markdown()
+    export_files_and_folders()
+
 
