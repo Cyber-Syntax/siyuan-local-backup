@@ -98,17 +98,19 @@ def delete_oldest(file_prefix, date_format, days_old):
                         subprocess.run(["rm", "-r", path])
                         # Print a message indicating the oldest backup has been deleted
                         print(f"Deleted the oldest backup: {f}")
+                    else:
+                        print(f"Skipping deletion of {f}")
+                else:
+                    print(f"{f} is not a directory")
+
 # Define backups directory
 backup_dir = os.path.expanduser("~") + "/Documents/app_backups/siyuan_Backups/"
 
-
-
-
-
 # List of URLS of the zip files you want to download
-urls = [   
-    "http://127.0.0.1:6806/export/Notes.zip",    
+urls = [
+    "http://127.0.0.1:6806/export/Notes.md.zip",    
 ]
+
 
 def main():
     # Call the function to backup files.
